@@ -1,2 +1,2 @@
-# diplom
-Дипломный практикум в Yandex.Cloud
+Terraform Infra
+
