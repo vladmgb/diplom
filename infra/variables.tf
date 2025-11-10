@@ -16,6 +16,28 @@ variable "zone" {
   description = "Zone name"
 }
 
+variable "subnets" {
+  description = "Subnets configuration for 3 zones"
+  type = map(object({
+    zone = string
+    cidr = string
+  }))
+  default = {
+    subnet-a = {
+      zone = "ru-central1-a"
+      cidr = "10.0.1.0/24"
+    }
+    subnet-b = {
+      zone = "ru-central1-b"
+      cidr = "10.0.2.0/24"
+    }
+    subnet-d = {
+      zone = "ru-central1-d"
+      cidr = "10.0.3.0/24"
+    }
+  }
+}
+
 variable "cluster_name" {
   description = "Kubernetes cluster name"
   type        = string
@@ -64,9 +86,6 @@ variable "kms_key_id" {
   default     = null
 }
 
-
-# Параметры нод
-
 variable "node_resources" {
   description = "Node resources configuration"
   type = object({
@@ -85,31 +104,6 @@ variable "node_resources" {
   }
 }
 
-# 3 подсети в разных зонах
-variable "subnets" {
-  description = "Subnets configuration for 3 zones"
-  type = map(object({
-    zone = string
-    cidr = string
-  }))
-  default = {
-    subnet-a = {
-      zone = "ru-central1-a"
-      cidr = "10.0.1.0/24"
-    }
-    subnet-b = {
-      zone = "ru-central1-b"
-      cidr = "10.0.2.0/24"
-    }
-    subnet-d = {
-      zone = "ru-central1-d"
-      cidr = "10.0.3.0/24"
-    }
-  }
-}
-
-
-# SSH переменные
 variable "ssh_username" {
   description = "Username for SSH access to nodes"
   type        = string
