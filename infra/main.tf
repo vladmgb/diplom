@@ -16,25 +16,9 @@ resource "yandex_vpc_subnet" "k8s_subnets" {
   depends_on = [yandex_vpc_network.k8s_network]
 }
 
-# Создание сервисного аккаунта для Kubernetes кластера
-resource "yandex_iam_service_account" "k8s_cluster" {
-  name        = "k8s-cluster-sa"
-  description = "Service account for Kubernetes cluster"
-  folder_id   = var.folder_id
-}
-
-# Роли для сервисного аккаунта кластера
-resource "yandex_resourcemanager_folder_iam_member" "k8s_cluster_roles" {
-  for_each = toset([
-    "k8s.clusters.agent",
-    "vpc.publicAdmin", 
-    "load-balancer.admin",
-    "compute.viewer"
-  ])
-
-  folder_id = var.folder_id
-  role      = each.key
-  member    = "serviceAccount:${yandex_iam_service_account.k8s_cluster.id}"
+# Создан в бекенде
+data "yandex_iam_service_account" "k8s_cluster" {
+  name = "k8s-cluster-sa"  
 }
 
 # Базовый кластер k8s
@@ -64,8 +48,8 @@ resource "yandex_kubernetes_cluster" "k8s_cluster" {
     }
   }
 
-  service_account_id      = yandex_iam_service_account.k8s_cluster.id
-  node_service_account_id = yandex_iam_service_account.k8s_cluster.id
+  service_account_id      = data.yandex_iam_service_account.k8s_cluster.id
+  node_service_account_id = data.yandex_iam_service_account.k8s_cluster.id
 
   release_channel = "REGULAR"
   network_policy_provider = "CALICO"
@@ -74,9 +58,6 @@ resource "yandex_kubernetes_cluster" "k8s_cluster" {
     key_id = var.kms_key_id
   }
 
-  depends_on = [
-    yandex_resourcemanager_folder_iam_member.k8s_cluster_roles
-  ]
 }
 
 # Группа нод
