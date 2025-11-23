@@ -8,5 +8,8 @@
 *.tfstate
 *.tfstate.*
 
+*.tfplan
+
 # own secret vars store.
 personal.auto.tfvars
+*.tfvars
