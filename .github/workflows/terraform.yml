@@ -35,7 +35,9 @@ jobs:
 
       - name: Write SA key to file
         run: |
-          echo "${{ secrets.YC_SA_KEY }}" > key.json
+          cat <<EOF > key.json
+          ${{ secrets.YC_SA_KEY }}
+          EOF
 
       - name: Configure YC CLI
         run: |
