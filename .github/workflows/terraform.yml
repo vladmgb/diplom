@@ -57,15 +57,18 @@ jobs:
 
       - name: Terraform Init
         run: |
+      - name: Terraform Init
+        run: |
           terraform init \
             -backend-config="bucket=terraform-state-081125" \
             -backend-config="key=k8s-cluster/terraform.tfstate" \
+            -backend-config='endpoints={"s3"="https://storage.yandexcloud.net"}' \
             -backend-config="region=ru-central1" \
-            -backend-config="endpoint=https://storage.yandexcloud.net" \
             -backend-config="skip_region_validation=true" \
             -backend-config="skip_credentials_validation=true" \
             -backend-config="skip_requesting_account_id=true"
         working-directory: infra
+
 
       - name: Terraform Validate
         run: terraform validate
