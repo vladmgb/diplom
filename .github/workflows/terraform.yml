@@ -1,0 +1,41 @@
+name: Terraform Apply
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install YC CLI
+        run: |
+          curl https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+          echo "${HOME}/yandex-cloud/bin" >> $GITHUB_PATH
+
+      - name: Configure YC CLI
+        env:
+          YC_SERVICE_ACCOUNT_KEY: ${{ secrets.YC_SERVICE_ACCOUNT_KEY }}
+        run: |
+          echo "$YC_SERVICE_ACCOUNT_KEY" > key.json
+          yc config set service-account-key key.json
+          yc config set cloud-id <ваш_cloud_id>
+          yc config set folder-id <ваш_folder_id>
+          yc config set compute-default-zone ru-central1-a
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
