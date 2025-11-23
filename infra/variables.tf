@@ -81,7 +81,7 @@ variable "master_zone" {
 }
 
 variable "kms_key_id" {
-  description = "KMS key ID for cluster encryption"
+  description = "KMS key ID for cluster encryptions"
   type        = string
   default     = null
 }
@@ -105,7 +105,7 @@ variable "node_resources" {
 }
 
 variable "ssh_username" {
-  description = "Username for SSH access to node"
+  description = "Username for SSH access to nodes"
   type        = string
   default     = "ubuntu"
 }
