@@ -47,15 +47,16 @@ jobs:
           terraform_version: latest
 
       - name: Terraform Init
-        run: terraform init \
-          -backend-config="bucket=terraform-state-081125" \
-          -backend-config="region=ru-central1" \
-          -backend-config="skip_region_validation=true" \
-          -backend-config="skip_credentials_validation=true" \
-          -backend-config="skip_requesting_account_id=true" \
-          -backend-config="skip_s3_checksum=true"
+        run: |
+          terraform init \
+            -backend-config="bucket=terraform-state-081125" \
+            -backend-config="region=ru-central1" \
+            -backend-config="skip_region_validation=true" \
+            -backend-config="skip_credentials_validation=true" \
+            -backend-config="skip_requesting_account_id=true" \
+            -backend-config="skip_s3_checksum=true"
         working-directory: infra
-      
+
       - name: Terraform Validate
         run: terraform validate
         working-directory: infra
