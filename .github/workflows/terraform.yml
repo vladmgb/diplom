@@ -6,11 +6,13 @@ on:
       - main
     paths-ignore:
       - "*.md"
+      - ".github/workflows/**"
   pull_request:
     branches:
       - main
     paths-ignore:
       - "*.md"
+      - ".github/workflows/**"
 
 env:
   TF_VAR_cloud_id: ${{ secrets.YC_CLOUD_ID }}
@@ -46,15 +48,23 @@ jobs:
         with:
           terraform_version: latest
 
+      - name: Prepare SSH keys
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ubuntu
+          echo "${{ secrets.SSH_PUBLIC_KEY }}" > ubuntu.pub
+          chmod 600 ubuntu ubuntu.pub
+        working-directory: infra
+
       - name: Terraform Init
         run: |
           terraform init \
             -backend-config="bucket=terraform-state-081125" \
+            -backend-config="key=k8s-cluster/terraform.tfstate" \
             -backend-config="region=ru-central1" \
+            -backend-config="endpoint=https://storage.yandexcloud.net" \
             -backend-config="skip_region_validation=true" \
             -backend-config="skip_credentials_validation=true" \
-            -backend-config="skip_requesting_account_id=true" \
-            -backend-config="skip_s3_checksum=true"
+            -backend-config="skip_requesting_account_id=true"
         working-directory: infra
 
       - name: Terraform Validate
@@ -67,5 +77,5 @@ jobs:
 
       - name: Terraform Apply (only on main)
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -var="service_account_key_file=key.json" -auto-approve tfplan
+        run: terraform apply -auto-approve tfplan
         working-directory: infra
