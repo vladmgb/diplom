@@ -35,8 +35,19 @@ jobs:
 
       - name: Write Yandex Cloud SA key
         run: |
-          printf '%s' '${{ secrets.YC_SA_KEY }}' | jq -r '.' > key.json 
+          echo '${{ secrets.YC_SA_KEY }}' > temp_key.json
+          jq -r . temp_key.json > key.json
+          rm temp_key.json
 
+      - name: Validate JSON
+        run: |
+          if jq empty key.json 2>/dev/null; then
+            echo "✓ JSON is valid"
+          else
+            echo "✗ Invalid JSON"
+            jq . key.json  
+            exit 1
+          fi
 
       - name: Configure YC CLI
         run: |
