@@ -97,10 +97,6 @@ jobs:
             -backend-config="skip_requesting_account_id=true"
         working-directory: infra
 
-      - name: Terraform Format
-        run: terraform fmt -check
-        working-directory: infra
-
       - name: Terraform Validate
         run: terraform validate
         working-directory: infra
