@@ -81,7 +81,7 @@ variable "master_zone" {
 }
 
 variable "kms_key_id" {
-  description = "KMS key ID for cluster encryptions"
+  description = "KMS key ID for cluster encryption"
   type        = string
   default     = null
 }
