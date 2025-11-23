@@ -74,6 +74,14 @@ jobs:
         run: terraform validate
         working-directory: infra
 
+      - name: Debug key.json
+        run: |
+          echo "==== FILE CONTENT ===="
+          cat -A key.json
+          echo "==== FILE HEX ===="
+          hexdump -C key.json
+
+
       - name: Terraform Plan
         run: terraform plan -var="service_account_key_file=key.json" -out=tfplan
         working-directory: infra
