@@ -49,6 +49,23 @@ jobs:
             exit 1
           fi
 
+      - name: Check key structure
+        run: |
+          echo "=== Key structure ==="
+          jq 'keys' key.json
+          echo "=== Has required fields? ==="
+          jq '. | has("id"), has("service_account_id"), has("private_key")' key.json    
+
+      - name: Check file path and content
+        run: |
+          echo "=== Current directory ==="
+          pwd
+          ls -la
+          echo "=== key.json location ==="
+          find . -name "key.json" -type f
+          echo "=== File size ==="
+          stat key.json
+
       - name: Configure YC CLI
         run: |
           yc config set cloud-id ${{ secrets.YC_CLOUD_ID }}
