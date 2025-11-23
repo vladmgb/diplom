@@ -70,7 +70,8 @@ jobs:
         run: |
           yc config set cloud-id ${{ secrets.YC_CLOUD_ID }}
           yc config set folder-id ${{ secrets.YC_FOLDER_ID }}
-          yc config set token "$(yc iam create-token --sa-key-file key.json)"
+          # Используем сервисный ключ для аутентификации
+          yc config set service-account-key key.json
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
@@ -110,6 +111,8 @@ jobs:
           echo "==== FILE HEX ===="
           hexdump -C key.json
 
+      - name: Copy key to infra directory
+        run: cp key.json infra/key.json
 
       - name: Terraform Plan
         run: terraform plan -var="service_account_key_file=key.json" -out=tfplan
