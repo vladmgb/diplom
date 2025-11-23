@@ -35,7 +35,7 @@ jobs:
 
       - name: Decode service account key
         run: |
-          echo "${{ secrets.YC_SA_KEY }}" | tr -d '\r\n' | base64 -d > key.json
+          echo '${{ secrets.YC_SA_KEY }}' > key.json
 
       - name: Configure YC CLI
         run: |
