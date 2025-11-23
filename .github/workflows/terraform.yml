@@ -33,9 +33,9 @@ jobs:
           curl https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
           echo "$HOME/yandex-cloud/bin" >> $GITHUB_PATH
 
-      - name: Write SA key to file
+      - name: Decode SA key
         run: |
-          echo '${{ secrets.YC_SA_KEY_JSON }}' > key.json
+          echo "${{ secrets.YC_SA_KEY_BASE64 }}" | base64 -d > key.json
 
       - name: Configure YC CLI
         run: |
