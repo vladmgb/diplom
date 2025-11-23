@@ -35,11 +35,7 @@ jobs:
 
       - name: Write Yandex Cloud SA key
         run: |
-          cat << EOF > key.json
-          $YC_SA_KEY
-          EOF
-        env:
-          YC_SA_KEY: ${{ secrets.YC_SA_KEY }}
+          printf '%s' '${{ secrets.YC_SA_KEY }}' | sed 's/\\n/\n/g' > key.json 
 
 
       - name: Configure YC CLI
