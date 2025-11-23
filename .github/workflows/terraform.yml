@@ -49,6 +49,9 @@ jobs:
             exit 1
           fi
 
+      - name: Copy key to infra directory
+        run: cp key.json infra/key.json
+
       - name: Configure YC CLI
         run: |
           yc config set cloud-id ${{ secrets.YC_CLOUD_ID }}
@@ -94,12 +97,13 @@ jobs:
             -backend-config="skip_requesting_account_id=true"
         working-directory: infra
 
+      - name: Terraform Format
+        run: terraform fmt -check
+        working-directory: infra
+
       - name: Terraform Validate
         run: terraform validate
         working-directory: infra
-
-      - name: Copy key to infra directory
-        run: cp key.json infra/key.json
 
       - name: Terraform Plan
         run: |
@@ -115,3 +119,8 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve tfplan
         working-directory: infra
+
+      - name: Cleanup sensitive files
+        if: always()
+        run: rm -f key.json infra/key.json ubuntu ubuntu.pub
+
