@@ -113,12 +113,13 @@ variable "ssh_username" {
 variable "ssh_public_key_path" {
   description = "Path to SSH public key file"
   type        = string
-  
+  default = ""
 }
 
 variable "ssh_private_key_path" {
   description = "Path to SSH private key file"
   type        = string
+  default = ""
 }
 
 variable "service_account_key_file" {
