@@ -105,7 +105,7 @@ variable "node_resources" {
 }
 
 variable "ssh_username" {
-  description = "Username for SSH access to nodess"
+  description = "Username for SSH access to nodes"
   type        = string
   default     = "ubuntu"
 }
