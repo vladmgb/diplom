@@ -33,7 +33,7 @@ jobs:
 
       - name: Decode service account key
         run: |
-          echo "${{ secrets.YC_SA_KEY }}" | base64 -d > key.json
+          echo "${{ secrets.YC_SA_KEY }}" | tr -d '\r\n' | base64 -d > key.json
 
       - name: Configure YC CLI
         run: |
@@ -47,15 +47,24 @@ jobs:
           terraform_version: latest
 
       - name: Terraform Init
-        run: terraform init -backend-config="bucket=my-bucket" -backend-config="region=ru-central1"
+        run: terraform init \
+          -backend-config="bucket=terraform-state-081125" \
+          -backend-config="region=ru-central1" \
+          -backend-config="skip_region_validation=true" \
+          -backend-config="skip_credentials_validation=true" \
+          -backend-config="skip_requesting_account_id=true" \
+          -backend-config="skip_s3_checksum=true"
         working-directory: infra
       
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: infra
+
       - name: Terraform Plan
         run: terraform plan -var="service_account_key_file=key.json" -out=tfplan
         working-directory: infra
-      
-      - name: Terraform Apply
+
+      - name: Terraform Apply (only on main)
         if: github.ref == 'refs/heads/main'
         run: terraform apply -var="service_account_key_file=key.json" -auto-approve tfplan
         working-directory: infra
-
