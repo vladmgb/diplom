@@ -17,7 +17,7 @@ variable "zone" {
 }
 
 variable "subnets" {
-  description = "Subnets configuration for 3 zones"
+  description = "Subnets configuration for zones"
   type = map(object({
     zone = string
     cidr = string
